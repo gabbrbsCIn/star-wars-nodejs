@@ -9,7 +9,48 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-  directUrl      = env("DIRECT_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Planeta {
+  id          Int       @id @default(autoincrement())
+  nome        String
+  clima       String
+  terreno     String
+  populacao   Int?
+  sistemaEstelar SistemaEstelar? @relation(fields: [sistemaEstelarId], references: [id])
+  sistemaEstelarId Int?
+
+  personagens Personagem[]
+}
+
+model SistemaEstelar {
+  id          Int       @id @default(autoincrement())
+  nome        String
+  descricao   String?
+  
+  planetas    Planeta[]
+
+  navesEspaciais NaveEspacial[]
+}
+
+model Personagem {
+  id          Int       @id @default(autoincrement())
+  nome        String
+  raca        String
+  afiliacao   String // Jedi, Sith, Rebelde, etc.
+  planetaNatal Planeta?  @relation(fields: [planetaNatalId], references: [id])
+  planetaNatalId Int?
+}
+
+model NaveEspacial {
+  id                Int       @id @default(autoincrement())
+  nome              String
+  modelo            String
+  fabricante        String
+  capacidadePassageiros Int
+  sistemaEstelar SistemaEstelar? @relation(fields: [sistemaEstelarId], references: [id])
+  sistemaEstelarId Int?
 }
